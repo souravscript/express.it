@@ -8,7 +8,7 @@ const Header = () => {
     <div className='app-header'>
         <div className='title'>
             <h1>
-                <Link to="/" >TweetX</Link>
+                <Link to="/" >express.it</Link>
             </h1>
         </div>
         <div className='nav'>
