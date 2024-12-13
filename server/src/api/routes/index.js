@@ -2,8 +2,10 @@ import express from "express"
 const router=express.Router()
 
 import userRouter from "./userRouter.js"
+import expressionRouter from "./expressionRouter.js"
 
 router.use("/api",userRouter)
+router.use("/api",expressionRouter)
 
 
 router.get("/api/test",(req,res)=>{

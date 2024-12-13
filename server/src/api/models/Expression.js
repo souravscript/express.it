@@ -1,5 +1,38 @@
 import mongoose from "mongoose";
 
+const reExpressionSchema = new mongoose.Schema(
+  {
+    content: {
+      type: String,
+      required: true,
+      maxlength: [280, "Content cannot exceed 280 characters"],
+      trim: true,
+    },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // Reference to the User schema
+      required: true,
+    },
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    likedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  {
+    timestamps: true, // Automatically adds createdAt and updatedAt fields
+  }
+);
+
 const expressionSchema = new mongoose.Schema(
   {
     content: {
@@ -23,45 +56,12 @@ const expressionSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    photos:[
-        {
-            type:String,
-        }
-    ],
-    reExpressions: [
+    photos: [
       {
-        content: {
-          type: String,
-          required: true,
-          maxlength: [280, "Content cannot exceed 280 characters"],
-          trim: true,
-        },
-        author: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-          required: true,
-        },
-        likes: {
-          type: Number,
-          default: 0,
-        },
-        likedBy: [
-          {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-          },
-        ],
-        createdAt: {
-          type: Date,
-          default: Date.now,
-        },
-        reExpressions: [this], // Recursive embedding for deeper reExpressions
+        type: String,
       },
     ],
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
+    reExpressions: [reExpressionSchema], // Sub-schema for nested reExpressions
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields

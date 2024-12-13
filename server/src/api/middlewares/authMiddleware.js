@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken" 
 const JWT_SECRET_KEY="secReteXpressItKey"
 
 
- const verifyToken=(req,res,next)=>{
+ export const verifyToken=(req,res,next)=>{
     const authHeader=req.get('Authorization');
     
 
@@ -16,11 +16,11 @@ const JWT_SECRET_KEY="secReteXpressItKey"
         if (!user) {
             return res.status(401).json({ error: "JWT verification failed" });
         }
-
         req.user = user; // Attach user to the request object
+
+        //console.log("tryng to get the user her in middleware ",req.user)
         next(); // Proceed to the next middleware
     } catch (error) {
         return res.status(401).json({ error: "Invalid token", details: error.message });
     }
 }
-module.exports={verifyToken}
