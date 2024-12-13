@@ -35,6 +35,7 @@ export const getOwnExpressionsController=async(req,res)=>{
 }
 export const getOthersExpressionController=async (req,res)=>{
     try{
+        console.log("trying to fetch req.params",req.params)
         const authorId=req.params;
         const othersExpressions=await getExpressionsByIDService({authorId})
         res.status(201).json({message:`Fetched all others expressions of ${authorId}`,expressions:othersExpressions})

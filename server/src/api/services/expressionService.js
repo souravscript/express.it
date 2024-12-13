@@ -21,9 +21,11 @@ export const getAllExpressionsService=async()=>{
     }
 }
 
-export const getExpressionsByIDService=async (authorId)=>{
+export const getExpressionsByIDService=async (author)=>{
     try{
-        const expressions= Expression.find({author:authorId})
+
+        console.log("author user id  in the service", author.authorId)
+        const expressions= Expression.find({author:author.authorId})
             .populate("author", "name email") // Populate author details if needed
             .populate("reExpressions.author", "name email") // Populate reExpressions' author details
             .sort({ createdAt: -1 }); // Fetch in descending order of creation time

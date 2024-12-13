@@ -6,7 +6,7 @@ import { createExpression, getAllExpressionController, getOthersExpressionContro
 const router=express.Router();
 router.post('/expression',verifyToken,createExpression)
 router.get('/all-expression',getAllExpressionController)
-router.get('/my-expressions',verifyToken,getOwnExpressionsController)
+router.get('/own-expressions',verifyToken,getOwnExpressionsController)
 router.get('/others-expressions',verifyToken,getOthersExpressionController)
 
 export default router;
