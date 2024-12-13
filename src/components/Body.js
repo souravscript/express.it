@@ -3,6 +3,7 @@ import {Routes,Route} from 'react-router-dom'
 import Feed from './Feed'
 import Users from './Users'
 import Profile from './Profile'
+import Login from './Login'
 
 
 const Body = () => {
@@ -13,7 +14,7 @@ const Body = () => {
         <Route path='/' element={<Feed/>} />
         <Route path='/users' element={<Users/>}/>
         <Route path='/profile' element={<Profile/>}/>
-        <Route path='auth' element={}/>
+        <Route path='auth' element={<Login/>}/>
       </Routes>
     </div>
   )
