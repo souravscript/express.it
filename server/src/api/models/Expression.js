@@ -23,6 +23,11 @@ const expressionSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    photos:[
+        {
+            type:String,
+        }
+    ],
     reExpressions: [
       {
         content: {
