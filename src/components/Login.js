@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import * as yup from 'yup';
 import { handleLogin } from '../utils/handleLogin';
+import { handleRegister } from '../utils/handleRegister';
 
 const Login = () => {
   const [accountExist, setAccountExist] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
+
 
   const [errors, setErrors] = useState({});
   const toggleAccountExist = () => setAccountExist(!accountExist);
@@ -63,7 +67,7 @@ const Login = () => {
         localStorage.setItem('session',userSessionData)
         window.location.href = '/';
       } else {
-        const registeredUser=handleLogin(email,password,name)
+        const registeredUser=handleRegister(email,password,name)
         if(!registeredUser){
           console.log("user not available")
         }
