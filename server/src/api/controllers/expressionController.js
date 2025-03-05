@@ -33,13 +33,13 @@ export const getOwnExpressionsController=async(req,res)=>{
         res.status(500).json({message:err.message})
     }
 }
-export const getOthersExpressionController=async (req,res)=>{
-    try{
-        console.log("trying to fetch req.params",req.params)
-        const authorId=req.params;
-        const othersExpressions=await getExpressionsByIDService({authorId})
-        res.status(201).json({message:`Fetched all others expressions of ${authorId}`,expressions:othersExpressions})
-    }catch(err){
-        res.status(500).json({message:err.message})
-    }
-}
+// export const getOthersExpressionController=async (req,res)=>{
+//     try{
+//         console.log("trying to fetch req.params",req.params)
+//         const {id}=req.params;
+//         const othersExpressions=await getExpressionsByIDService({id})
+//         res.status(201).json({message:`Fetched all others expressions of ${authorId}`,expressions:othersExpressions})
+//     }catch(err){
+//         res.status(500).json({message:err.message})
+//     }
+// }

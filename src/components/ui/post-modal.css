@@ -1,0 +1,43 @@
+.post-modal-container{
+    position: fixed;
+    background-color: rgba(255,255,255,0.5);
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal{
+    background: #fffff0;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: auto;
+    width: 90%; /* Adjust for smaller screens */
+    max-width: 400px; /* Limit width on larger screens */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.expression-input{
+    height: 100%;
+    width: 100%;
+    font-size: 2rem;
+}
+.expression-input:focus{
+    outline: none;
+}
+
+.create-expression{
+    padding: 0.5rem;
+    background-color: hotpink;
+    border: none;
+    border-radius: 1rem;
+}

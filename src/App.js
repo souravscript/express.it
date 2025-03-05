@@ -1,24 +1,21 @@
 import './App.css';
 import Body from './components/Body';
-import Header from './components/Header';
-import { useState } from 'react';
-import {BrowserRouter} from 'react-router-dom'
-import Login from './components/Login'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Login from './components/Login';
 
 function App() {
-  const[isLoggedIN,setIsLoggedIn]=useState(true)
+  //const location = useLocation();
+  const isAuthPage = window.location.pathname === '/auth';
+
   return (
     <div className="App">
-
-
-      <BrowserRouter>
-      {!isLoggedIN && <Login/> }
-       {isLoggedIN && 
+      <BrowserRouter> 
         <div className='main-container'>
-          <Header/>
-          <Body/>
+          <Routes>
+            <Route path='/auth' element={<Login />} />
+          </Routes>
+          {!isAuthPage && <Body />}
         </div>
-        }
       </BrowserRouter>
     </div>
   );
