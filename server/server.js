@@ -2,6 +2,7 @@ import express from "express";
 import cors from 'cors'
 import { connectToDatabase } from "./src/config/db-config.js";
 import mainRouter from "./src/api/routes/index.js"
+import { swaggerUi, swaggerDocs } from './src/swagger.js';
 const app = express();
 const PORT = 8081;
 
@@ -16,6 +17,8 @@ const connect=await connectToDatabase()
 })*/
 app.use(mainRouter)
 
+// Serve Swagger documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 const startServer = () => {
     try {
