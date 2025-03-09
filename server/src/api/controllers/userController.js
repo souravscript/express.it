@@ -1,17 +1,25 @@
 import { registerUser,loginUser } from "../services/userService.js";
+import { handleError } from '../../utils/errorHandler.js';
+import { validateUserRegistration } from '../../middlewares/validate.js';
+import { validationResult } from 'express-validator';
+import asyncHandler from '../../utils/asyncHandler.js';
 
-export const register = async (req, res) => {
+export const register = asyncHandler(async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         const { email, password, name } = req.body;
         const result = await registerUser({ email, password, name });
         res.status(201).json({ message: "User registered successfully", result: result });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        handleError(res, err);
     }
-};
+});
 
   
-export const login = async (req, res) => {
+export const login = asyncHandler(async (req, res) => {
     try {
         const { email, password } = req.body; 
         const { userDetails, token } = await loginUser(email, password);
@@ -20,7 +28,7 @@ export const login = async (req, res) => {
             userDetails: userDetails,
             token: token
         });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
+    } catch (err) {
+        handleError(res, err);
     }
-};
+});

@@ -1,45 +1,50 @@
 import { createExpressionService, getAllExpressionsService, getExpressionsByIDService } from "../services/expressionService.js";
+import { handleError } from '../../utils/errorHandler.js';
+import { validateExpressionCreation } from '../../middlewares/validate.js';
+import { validationResult } from 'express-validator';
+import asyncHandler from '../../utils/asyncHandler.js';
 
-export const createExpression=async (req,res)=>{
-    try{
-        const {content,photos}=req.body;
-        if(!content){
-            res.status(401).json({error:"Content is required"})
+export const createExpression = asyncHandler(async (req, res) => {
+    try {
+        const { content, photos } = req.body;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
         }
-        const authorId=req.user.id
-        const newExpression=await createExpressionService({content,photos,authorId})
-        res.status(201).json({message:"Post created successfully",expression:newExpression});
-        
-    }catch(err){
-        res.status(500).json({ message: err.message });
+        const authorId = req.user.id;
+        const newExpression = await createExpressionService({ content, photos, authorId });
+        res.status(201).json({ message: "Post created successfully", expression: newExpression });
+    } catch (err) {
+        handleError(res, err);
     }
-}
+});
 
-export const getAllExpressionController=async (req,res)=>{
-    try{
-        const allExpression=await getAllExpressionsService()
-        res.status(201).json({message:"All expression fetched",expressions:allExpression})
-    }catch(err){
-        res.status(500).json({message:err.message})
+export const getAllExpressionController = asyncHandler(async (req, res) => {
+    try {
+        const allExpression = await getAllExpressionsService();
+        res.status(200).json({ message: "All expressions fetched", expressions: allExpression });
+    } catch (err) {
+        handleError(res, err);
     }
-}
+});
 
-export const getOwnExpressionsController=async(req,res)=>{
-    try{
-        const authorId=req.user.id
-        const ownExpressions=await getExpressionsByIDService({authorId})
-        res.status(201).json({message:"Fetched all my expressions",ownExpressions:ownExpressions})
-    }catch(err){
-        res.status(500).json({message:err.message})
+export const getOwnExpressionsController = asyncHandler(async (req, res) => {
+    try {
+        const authorId = req.user.id;
+        const ownExpressions = await getExpressionsByIDService({ authorId });
+        res.status(201).json({ message: "Fetched all my expressions", ownExpressions: ownExpressions });
+    } catch (err) {
+        handleError(res, err);
     }
-}
-export const getOthersExpressionController = async (req, res) => {
+});
+
+export const getOthersExpressionController = asyncHandler(async (req, res) => {
     try {
         console.log("trying to fetch req.params", req.params);
         const { id, authorId } = req.params; // Assuming authorId is part of the params
         const othersExpressions = await getExpressionsByIDService({ id });
         res.status(201).json({ message: `Fetched all others expressions of ${authorId}`, expressions: othersExpressions });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        handleError(res, err);
     }
-}
+});
