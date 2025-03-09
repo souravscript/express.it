@@ -1,36 +1,40 @@
-import { handleError } from '../../utils/errorHandler.js';
 import Expression from '../models/Expression.js';
 
-export const createExpressionService = async ({ content, photos, authorId }) => {
-    try {
-        const newExpression = await Expression.create({ content, photos, author: authorId });
-        return newExpression;
-    } catch (err) {
-        handleError(err);
+class ExpressionService {
+    async createExpression({ content, photos, authorId }) {
+        try {
+            const newExpression = await Expression.create({ content, photos, author: authorId });
+            return newExpression;
+        } catch (err) {
+            throw new Error(err.message);
+        }
     }
-};
 
-export const getAllExpressionsService = async () => {
-    try {
-        const expressions = await Expression.find()
-            .populate("author", "name email")
-            .populate("reExpressions.author", "name email")
-            .sort({ createdAt: -1 });
-        return expressions;
-    } catch (err) {
-        handleError(err);
+    async getAllExpressions() {
+        try {
+            const expressions = await Expression.find()
+                .populate('author', 'name email')
+                .populate('reExpressions.author', 'name email')
+                .sort({ createdAt: -1 });
+            return expressions;
+        } catch (err) {
+            throw new Error(err.message);
+        }
     }
-};
 
-export const getExpressionsByIDService = async (author) => {
-    try {
-        console.log("author user id  in the service", author.authorId)
-        const expressions = Expression.find({ author: author.authorId })
-            .populate("author", "name email")
-            .populate("reExpressions.author", "name email")
-            .sort({ createdAt: -1 });
-        return expressions
-    } catch (err) {
-        handleError(err);
+    async getExpressionsByID(author) {
+        try {
+            const expressions = await Expression.find({ author: author.authorId })
+                .populate('author', 'name email')
+                .populate('reExpressions.author', 'name email')
+                .sort({ createdAt: -1 });
+            return expressions;
+        } catch (err) {
+            throw new Error(err.message);
+        }
     }
-};
+}
+
+// Removed unused handleError import
+const expressionServiceInstance = new ExpressionService();
+export default expressionServiceInstance;
