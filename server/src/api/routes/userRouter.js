@@ -1,7 +1,8 @@
 import express from "express"
-import { login, register } from "../controllers/userController.js"
+import { login, register, updateProfile } from "../controllers/userController.js"
 import multer from 'multer';
 import path from 'path';
+import { validate, userRegistrationSchema, userProfileUpdateSchema } from "../middlewares/zodValidation.js";
 
 /**
  * @swagger
@@ -53,21 +54,25 @@ const upload = multer({
  *           schema:
  *             type: object
  *             properties:
- *               username:
+ *               email:
  *                 type: string
- *                 description: The username of the user
- *                 example: "john_doe"
+ *                 description: The email of the user
+ *                 example: "john@example.com"
  *               password:
  *                 type: string
  *                 description: The password of the user
  *                 example: "password123"
+ *               name:
+ *                 type: string
+ *                 description: The name of the user
+ *                 example: "John Doe"
  *     responses:
  *       201:
  *         description: User registered successfully
  *       400:
  *         description: Invalid input
  */
-router.post("/register",register)
+router.post("/register", validate(userRegistrationSchema), register)
 
 /**
  * @swagger
@@ -82,10 +87,10 @@ router.post("/register",register)
  *           schema:
  *             type: object
  *             properties:
- *               username:
+ *               email:
  *                 type: string
- *                 description: The username of the user
- *                 example: "john_doe"
+ *                 description: The email of the user
+ *                 example: "john@example.com"
  *               password:
  *                 type: string
  *                 description: The password of the user
@@ -96,23 +101,16 @@ router.post("/register",register)
  *       401:
  *         description: Unauthorized
  */
-router.post("/login",login) 
+router.post("/login", login) 
 
 /**
  * @swagger
- * /profile/{userId}:
- *   put:
+ * /profile:
+ *   patch:
  *     tags: [User]
- *     summary: Update user profile with optional profile picture
- *     parameters:
- *       - in: path
- *         name: userId
- *         schema:
- *           type: string
- *         required: true
- *         description: The ID of the user
+ *     summary: Update user profile
  *     requestBody:
- *       required: false
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
@@ -122,25 +120,48 @@ router.post("/login",login)
  *                 type: string
  *                 description: The name of the user
  *                 example: "John Doe"
- *               email:
+ *               bio:
  *                 type: string
- *                 description: The email of the user
- *                 example: "john.doe@example.com"
+ *                 description: The bio of the user
+ *                 example: "Software Developer"
+ *               website:
+ *                 type: string
+ *                 description: The website of the user
+ *                 example: "https://john.com"
+ *               location:
+ *                 type: string
+ *                 description: The location of the user
+ *                 example: "New York"
  *     responses:
  *       200:
- *         description: User profile updated successfully
+ *         description: Profile updated successfully
  *       400:
  *         description: Invalid input
  */
-router.put('/profile/:userId', upload.single('profilePic'), async (req, res) => {
-    try {
-        const userId = req.params.userId;
-        const updates = req.body;
-        const updatedUser = await register(userId, updates, req.file);
-        res.json(updatedUser);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-});
+router.patch("/profile", validate(userProfileUpdateSchema), updateProfile)
+
+/**
+ * @swagger
+ * /profile/picture:
+ *   patch:
+ *     tags: [User]
+ *     summary: Update user profile picture
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               profilePic:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Profile picture updated successfully
+ *       400:
+ *         description: Invalid input
+ */
+router.patch("/profile/picture", upload.single('profilePic'), updateProfile)
 
 export default router

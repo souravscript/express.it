@@ -1,6 +1,7 @@
 import express from 'express'
 import { verifyToken } from '../middlewares/authMiddleware.js';
 import { createExpression, getAllExpressionController, getOthersExpressionController, getOwnExpressionsController } from '../controllers/expressionController.js';
+import { validate, expressionCreationSchema } from "../middlewares/zodValidation.js";
 
 /**
  * @swagger
@@ -24,10 +25,16 @@ import { createExpression, getAllExpressionController, getOthersExpressionContro
  *           schema:
  *             type: object
  *             properties:
- *               expression:
+ *               content:
  *                 type: string
- *                 description: The expression text
+ *                 description: The expression content
  *                 example: "This is a new expression"
+ *               photos:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Array of photo URLs
+ *                 example: ["https://example.com/photo1.jpg"]
  *     responses:
  *       201:
  *         description: Expression created successfully
@@ -73,9 +80,9 @@ import { createExpression, getAllExpressionController, getOthersExpressionContro
  */
 
 const router=express.Router();
-router.post('/expression',verifyToken,createExpression)
-router.get('/all-expression',getAllExpressionController)
-router.get('/own-expressions',verifyToken,getOwnExpressionsController)
-router.get('/others-expressions',verifyToken,getOthersExpressionController)
+router.post('/expression', verifyToken, validate(expressionCreationSchema), createExpression)
+router.get('/all-expression', getAllExpressionController)
+router.get('/own-expressions', verifyToken, getOwnExpressionsController)
+router.get('/others-expressions', verifyToken, getOthersExpressionController)
 
 export default router;

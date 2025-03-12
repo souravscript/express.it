@@ -1,11 +1,13 @@
 import express from "express"
-const router=express.Router()
 
 import userRouter from "./userRouter.js"
 import expressionRouter from "./expressionRouter.js"
+import followRoutes from "./followRoutes.js"
+const router=express.Router()
 
 router.use("/api",userRouter)
 router.use("/api",expressionRouter)
+router.use("/api",followRoutes)
 
 
 router.get("/api/test",(req,res)=>{
