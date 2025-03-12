@@ -24,6 +24,13 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: [8, "Password must be at least 8 characters long"],
     },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      minlength: [3, "Username must be at least 3 characters long"],
+    },
     profilePic: {
       type: String,
       default: "https://winaero.com/blog/wp-content/uploads/2017/12/User-icon-256-blue.png",

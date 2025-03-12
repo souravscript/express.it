@@ -6,14 +6,12 @@ import { handleRegister } from '../utils/handleRegister';
 const Login = () => {
   const [accountExist, setAccountExist] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
-
 
   const [errors, setErrors] = useState({});
   const toggleAccountExist = () => setAccountExist(!accountExist);
@@ -51,6 +49,7 @@ const Login = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await formSchema.validate(formData, { abortEarly: false });
       setErrors({}); // Clear previous errors
@@ -73,12 +72,14 @@ const Login = () => {
         }
         setAccountExist(true)
       }
-    } catch (validationErrors) {
+    } catch (error) {
       const formattedErrors = {};
-      validationErrors.inner.forEach((error) => {
+      error.inner.forEach((error) => {
         formattedErrors[error.path] = error.message;
       });
       setErrors(formattedErrors);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,7 +110,7 @@ const Login = () => {
                   value={formData.name}
                   onChange={handleChange}
                 />
-                {errors.name && <span className="error">{errors.name}</span>}
+                {errors.name && <div className="error-message">{errors.name}</div>}
               </>
             )}
 
@@ -120,7 +121,7 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
             />
-            {errors.email && <span className="error">{errors.email}</span>}
+            {errors.email && <div className="error-message">{errors.email}</div>}
 
             <input
               placeholder="Password"
@@ -129,7 +130,7 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
             />
-            {errors.password && <span className="error">{errors.password}</span>}
+            {errors.password && <div className="error-message">{errors.password}</div>}
 
             {!accountExist && (
               <>
@@ -140,9 +141,7 @@ const Login = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                 />
-                {errors.confirmPassword && (
-                  <span className="error">{errors.confirmPassword}</span>
-                )}
+                {errors.confirmPassword && <div className="error-message">{errors.confirmPassword}</div>}
               </>
             )}
 
@@ -161,8 +160,17 @@ const Login = () => {
               <button
                 type="submit"
                 className={accountExist ? 'login-btn' : 'signup-btn'}
+                disabled={loading}
               >
-                {accountExist ? 'Login' : 'Signup'}
+                {loading ? (
+                  <div className="spinner-border text-light" role="status">
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                ) : accountExist ? (
+                  'Login'
+                ) : (
+                  'Signup'
+                )}
               </button>
             </div>
           </form>

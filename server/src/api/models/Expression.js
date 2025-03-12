@@ -1,72 +1,99 @@
 import mongoose from "mongoose";
 
-const reExpressionSchema = new mongoose.Schema(
-  {
-    content: {
-      type: String,
-      required: true,
-      maxlength: [280, "Content cannot exceed 280 characters"],
-      trim: true,
-    },
-    author: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Reference to the User schema
-      required: true,
-    },
-    likes: {
-      type: Number,
-      default: 0,
-    },
-    likedBy: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
+const commentSchema = new mongoose.Schema({
+  content: {
+    type: String,
+    required: true,
+    maxlength: [500, "Comment cannot exceed 500 characters"],
+    trim: true,
   },
-  {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
-  }
-);
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  likes: {
+    type: Number,
+    default: 0,
+  },
+  likedBy: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-const expressionSchema = new mongoose.Schema(
-  {
-    content: {
-      type: String,
-      required: true,
-      maxlength: [280, "Content cannot exceed 280 characters"],
-      trim: true,
-    },
-    author: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Reference to the User schema
-      required: true,
-    },
-    likes: {
-      type: Number,
-      default: 0,
-    },
-    likedBy: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    photos: [
-      {
-        type: String,
-      },
-    ],
-    reExpressions: [reExpressionSchema], // Sub-schema for nested reExpressions
+const reExpressionSchema = new mongoose.Schema({
+  content: {
+    type: String,
+    required: true,
+    maxlength: [280, "Content cannot exceed 280 characters"],
+    trim: true,
   },
-  {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
-  }
-);
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  originalExpression: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Expression",
+    required: true,
+  },
+  likes: {
+    type: Number,
+    default: 0,
+  },
+  likedBy: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  comments: [commentSchema],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const expressionSchema = new mongoose.Schema({
+  content: {
+    type: String,
+    required: true,
+    maxlength: [280, "Content cannot exceed 280 characters"],
+    trim: true,
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  likes: {
+    type: Number,
+    default: 0,
+  },
+  likedBy: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  photos: [
+    {
+      type: String,
+    },
+  ],
+  comments: [commentSchema],
+  reExpressions: [reExpressionSchema],
+}, {
+  timestamps: true,
+});
 
 const Expression = mongoose.model("Expression", expressionSchema);
 
