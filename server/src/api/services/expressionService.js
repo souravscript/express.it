@@ -1,10 +1,15 @@
 import Expression from '../models/Expression.js';
+import { expressionQueue } from '../../config/queue.js';
 
 class ExpressionService {
     async createExpression({ content, photos, authorId }) {
         try {
-            const newExpression = await Expression.create({ content, photos, author: authorId });
-            return newExpression;
+            const job = await expressionQueue.add('createExpression', {
+                content,
+                photos,
+                authorId
+            });
+            return await job.wait();
         } catch (err) {
             throw new Error(err.message);
         }
@@ -56,12 +61,11 @@ class ExpressionService {
 
     async updateExpression(expressionId, updates) {
         try {
-            const expression = await Expression.findByIdAndUpdate(
+            const job = await expressionQueue.add('updateExpression', {
                 expressionId,
-                updates,
-                { new: true }
-            ).populate('author', 'name email');
-            return expression;
+                updates
+            });
+            return await job.wait();
         } catch (err) {
             throw new Error(err.message);
         }
@@ -69,8 +73,10 @@ class ExpressionService {
 
     async deleteExpression(expressionId) {
         try {
-            const expression = await Expression.findByIdAndDelete(expressionId);
-            return expression;
+            const job = await expressionQueue.add('deleteExpression', {
+                expressionId
+            });
+            return await job.wait();
         } catch (err) {
             throw new Error(err.message);
         }
@@ -78,13 +84,11 @@ class ExpressionService {
 
     async likeExpression(expressionId, userId) {
         try {
-            const expression = await Expression.findById(expressionId);
-            if (!expression.likedBy.includes(userId)) {
-                expression.likedBy.push(userId);
-                expression.likes += 1;
-                await expression.save();
-            }
-            return expression;
+            const job = await expressionQueue.add('likeExpression', {
+                expressionId,
+                userId
+            });
+            return await job.wait();
         } catch (err) {
             throw new Error(err.message);
         }
@@ -92,13 +96,11 @@ class ExpressionService {
 
     async unlikeExpression(expressionId, userId) {
         try {
-            const expression = await Expression.findById(expressionId);
-            if (expression.likedBy.includes(userId)) {
-                expression.likedBy.pull(userId);
-                expression.likes -= 1;
-                await expression.save();
-            }
-            return expression;
+            const job = await expressionQueue.add('unlikeExpression', {
+                expressionId,
+                userId
+            });
+            return await job.wait();
         } catch (err) {
             throw new Error(err.message);
         }
